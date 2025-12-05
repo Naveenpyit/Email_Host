@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from django.core.mail import EmailMessage
 
 @api_view(['POST'])
@@ -28,10 +29,12 @@ def sendEmail(request):
         💬 Message:
         {content}
         """
+        print(body)
+        
         response = EmailMessage(
             subject=f'[Contact Form]  {subject}',body=body,from_email=email,to=['naveenpyit@gmail.com'],reply_to= [email])
         response.send(fail_silently=False)
         return Response({'status':1,'message':'Email Sent Successfully!'})
         
     except Exception as e:
-        return Response({'status':0,'message':str(e)})
+        return Response({'status':status.HTTP_502_BAD_GATEWAY,'message':str(e), })
